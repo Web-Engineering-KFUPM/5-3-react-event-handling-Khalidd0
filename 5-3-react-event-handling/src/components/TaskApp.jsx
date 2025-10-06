@@ -2,47 +2,53 @@ import React, { useState } from "react";
 import TaskList from "./TaskList";
 
 export default function TaskApp() {
-  
+  const [text, setText] = useState("");
+  const [tasks, setTasks] = useState([]);
+
   const handleSubmit = () => {
-   
+    const value = text.trim();
+    if (!value) return;
+    setTasks((prev) => [...prev, { id: Date.now(), text: value }]);
+    setText("");
   };
 
-  
   const handleDelete = (id) => {
-    // TODO: filter tasks by id to remove the clicked one
+    setTasks((prev) => prev.filter((t) => t.id !== id));
   };
 
-  
   const handleClearAll = () => {
-    // TODO: set tasks to empty array
+    setTasks([]);
   };
 
   return (
     <section className="card">
-      {/*Controlled Input */}
       <div className="inputRow">
         <input
           type="text"
           placeholder="Type a task..."
           className="input"
-          // TODO: value={text}
-          // TODO: onChange={(e) => setText(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSubmit();
           }}
         />
-        <button className="btn btn--primary" onClick={handleSubmit}>
+        <button
+          className="btn btn--primary"
+          onClick={handleSubmit}
+          disabled={!text.trim()}
+        >
           Submit
         </button>
       </div>
-
-      {/*Render Task List and Enable Delete */}
-      {/*Pass tasks and onDelete */}
-      <TaskList /* tasks={tasks} onDelete={handleDelete} */ />
-
-      {/*Clear All */}
+      <p className="muted">{text}</p>
+      <TaskList tasks={tasks} onDelete={handleDelete} />
       <div className="footerRow">
-        <button className="btn btn--ghost" onClick={handleClearAll}>
+        <button
+          className="btn btn--ghost"
+          onClick={handleClearAll}
+          disabled={tasks.length === 0}
+        >
           Clear All
         </button>
       </div>
